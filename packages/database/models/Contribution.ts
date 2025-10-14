@@ -75,9 +75,12 @@ const ContributionSchema = new Schema<IContribution>(
   }
 );
 
-// Indexes
-ContributionSchema.index({ chamaId: 1, userId: 1, month: 1, year: 1 });
-ContributionSchema.index({ status: 1 });
+// Indexes for performance optimization
+ContributionSchema.index({ chamaId: 1, userId: 1, month: 1, year: 1 }); // Unique contribution tracking
+ContributionSchema.index({ userId: 1, chamaId: 1, year: -1 }); // Member contributions by year
+ContributionSchema.index({ chamaId: 1, status: 1 }); // Filter by status per chama
+ContributionSchema.index({ paymentDate: -1 }); // Sort by payment date
+ContributionSchema.index({ year: -1, month: -1 }); // Time-based queries
 
 export default mongoose.models.Contribution ||
   mongoose.model<IContribution>('Contribution', ContributionSchema);

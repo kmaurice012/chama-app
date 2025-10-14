@@ -67,9 +67,12 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-// Indexes
+// Indexes for performance optimization
 UserSchema.index({ email: 1 });
 UserSchema.index({ phone: 1 });
 UserSchema.index({ chamaId: 1 });
+UserSchema.index({ chamaId: 1, role: 1 }); // Compound index for queries filtering by chama and role
+UserSchema.index({ role: 1, isActive: 1 }); // Compound index for active users by role
+UserSchema.index({ createdAt: -1 }); // For sorting by join date
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

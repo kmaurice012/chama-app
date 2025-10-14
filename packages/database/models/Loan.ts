@@ -169,8 +169,12 @@ const LoanSchema = new Schema<ILoan>(
   }
 );
 
-// Indexes
-LoanSchema.index({ chamaId: 1, userId: 1 });
-LoanSchema.index({ status: 1 });
+// Indexes for performance optimization
+LoanSchema.index({ chamaId: 1, userId: 1 }); // User's loans in chama
+LoanSchema.index({ chamaId: 1, status: 1 }); // Filter loans by status per chama
+LoanSchema.index({ userId: 1, status: 1 }); // User's loans by status
+LoanSchema.index({ 'guarantors.userId': 1, 'guarantors.status': 1 }); // Guarantor queries
+LoanSchema.index({ requestDate: -1 }); // Sort by request date
+LoanSchema.index({ dueDate: 1, status: 1 }); // Overdue loans query
 
 export default mongoose.models.Loan || mongoose.model<ILoan>('Loan', LoanSchema);
