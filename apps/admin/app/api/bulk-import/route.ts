@@ -156,7 +156,7 @@ async function importContributions(
 
       // Create contribution
       await Contribution.create({
-        chamaId,
+        chamaId: chamaId as any,
         userId: user._id,
         amount: parseFloat(data.amount),
         month: parseInt(data.month),

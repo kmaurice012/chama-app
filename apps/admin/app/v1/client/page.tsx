@@ -5,15 +5,19 @@ import { connectDB, Chama, User, Contribution, Loan, Meeting, Fine, RotationCycl
 import { Users, DollarSign, TrendingUp, AlertCircle, Calendar, Repeat, Heart } from 'lucide-react';
 import ContributionChart from '@/components/ContributionChart';
 import LoanStatusChart from '@/components/LoanStatusChart';
+import mongoose from 'mongoose';
 
 async function getDashboardData(chamaId: string) {
   await connectDB();
+
+  // Convert string chamaId to MongoDB ObjectId for aggregation queries
+  const chamaObjectId = new mongoose.Types.ObjectId(chamaId);
 
   const [chama, members, contributions, loans, contributionTrends, loansByStatus, upcomingMeetings, pendingFines, activeRotations, pendingWelfareRequests] = await Promise.all([
     Chama.findById(chamaId),
     User.countDocuments({ chamaId, isActive: true }),
     Contribution.aggregate([
-      { $match: { chamaId: chamaId as any, status: 'paid' } },
+      { $match: { chamaId: chamaObjectId, status: 'paid' } },
       {
         $group: {
           _id: null,
@@ -22,7 +26,7 @@ async function getDashboardData(chamaId: string) {
       },
     ]),
     Loan.aggregate([
-      { $match: { chamaId: chamaId as any } },
+      { $match: { chamaId: chamaObjectId } },
       {
         $group: {
           _id: '$status',
@@ -33,7 +37,7 @@ async function getDashboardData(chamaId: string) {
     ]),
     // Get contribution trends by month (last 6 months)
     Contribution.aggregate([
-      { $match: { chamaId: chamaId as any, status: 'paid' } },
+      { $match: { chamaId: chamaObjectId, status: 'paid' } },
       {
         $group: {
           _id: {
@@ -48,7 +52,7 @@ async function getDashboardData(chamaId: string) {
     ]),
     // Get loan counts by status for pie chart
     Loan.aggregate([
-      { $match: { chamaId: chamaId as any } },
+      { $match: { chamaId: chamaObjectId } },
       {
         $group: {
           _id: '$status',
@@ -58,13 +62,13 @@ async function getDashboardData(chamaId: string) {
     ]),
     // Get upcoming meetings
     Meeting.countDocuments({
-      chamaId: chamaId as any,
+      chamaId: chamaObjectId,
       scheduledDate: { $gte: new Date() },
       status: { $in: ['scheduled', 'ongoing'] },
     }),
     // Get pending fines count and total
     Fine.aggregate([
-      { $match: { chamaId: chamaId as any, status: 'pending' } },
+      { $match: { chamaId: chamaObjectId, status: 'pending' } },
       {
         $group: {
           _id: null,
@@ -75,12 +79,12 @@ async function getDashboardData(chamaId: string) {
     ]),
     // Get active rotations
     RotationCycle.countDocuments({
-      chamaId: chamaId as any,
+      chamaId: chamaObjectId,
       status: 'active',
     }),
     // Get pending welfare requests
     WelfareRequest.countDocuments({
-      chamaId: chamaId as any,
+      chamaId: chamaObjectId,
       status: 'pending',
     }),
   ]);
