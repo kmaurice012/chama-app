@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Add merry-go-round, meetings, fines, and welfare management\n\nBackend Features:\n- Add Rotation system with cycles and distributions\n- Add Meeting management with attendance tracking\n- Add Fines & Penalties with auto-application\n- Add Welfare fund with contributions and requests\n- Enhance Loan model with guarantor approval workflow\n- Update Chama model with new settings (rotation, welfare, fines)\n\nFrontend Features:\n- Update dashboard with 4 new stat widgets\n- Add Rotations page (/dashboard/rotations)\n- Add Meetings page (/dashboard/meetings)\n- Add Fines page (/dashboard/fines)\n- Add Welfare page (/dashboard/welfare)\n- Enhance navigation with 4 new menu items\n- Add interactive filters, tabs, and actions\n\nAPI Endpoints Added:\n- Rotations: GET/POST /api/rotations, POST /api/rotations/[id]/distribute\n- Meetings: GET/POST /api/meetings, PATCH /api/meetings/[id]/attendance\n- Fines: GET/POST /api/fines, POST /api/fines/[id]/pay, POST /api/fines/[id]/waive\n- Welfare: GET/POST /api/welfare/contributions, GET/POST /api/welfare/requests\n- Loans: POST /api/loans/[id]/guarantor\n\nModels Created:\n- RotationCycle, RotationDistribution\n- Meeting\n- Fine\n- WelfareContribution, WelfareRequest\n\nAll features align with real Kenyan chama operations including\nmerry-go-round rotations, table banking, welfare support, and\nguarantor requirements.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

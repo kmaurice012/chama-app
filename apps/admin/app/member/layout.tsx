@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { Home, DollarSign, TrendingUp, User, LogOut } from 'lucide-react';
+import { Home, DollarSign, TrendingUp, User, LogOut, AlertCircle, Heart } from 'lucide-react';
 
 export default async function MemberLayout({
   children,
@@ -57,6 +57,8 @@ export default async function MemberLayout({
               <NavLink href="/member" icon={<Home />} label="Dashboard" />
               <NavLink href="/member/contributions" icon={<DollarSign />} label="My Contributions" />
               <NavLink href="/member/loans" icon={<TrendingUp />} label="My Loans" />
+              <NavLink href="/member/fines" icon={<AlertCircle />} label="My Fines" />
+              <NavLink href="/member/welfare" icon={<Heart />} label="Welfare" />
               <NavLink href="/member/profile" icon={<User />} label="Profile" />
             </nav>
           </aside>

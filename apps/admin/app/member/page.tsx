@@ -1,21 +1,29 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { connectDB, Contribution, Loan, Chama } from '@chama-app/database';
-import { DollarSign, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
+import { connectDB, Contribution, Loan, Chama, Fine, WelfareRequest } from '@chama-app/database';
+import { DollarSign, TrendingUp, Calendar, AlertCircle, Heart } from 'lucide-react';
 
 async function getMemberData(userId: string, chamaId: string) {
   await connectDB();
 
-  const [chama, contributions, loans] = await Promise.all([
+  const [chama, contributions, loans, fines, welfareRequests, guarantorLoans] = await Promise.all([
     Chama.findById(chamaId),
     Contribution.find({ userId, chamaId }).sort({ year: -1, month: -1 }),
     Loan.find({ userId, chamaId }).sort({ requestDate: -1 }),
+    Fine.find({ userId, chamaId, status: 'pending' }),
+    WelfareRequest.find({ requesterId: userId, chamaId }).sort({ requestDate: -1 }),
+    Loan.find({
+      chamaId,
+      'guarantors.userId': userId,
+      'guarantors.status': 'pending'
+    }).populate('userId', 'name'),
   ]);
 
   const totalContributions = contributions.reduce((sum, c) => sum + c.amount, 0);
   const pendingLoans = loans.filter((l) => l.status === 'pending').length;
   const activeLoans = loans.filter((l) => l.status === 'disbursed');
   const totalLoanBalance = activeLoans.reduce((sum, l) => sum + l.balance, 0);
+  const totalPendingFines = fines.reduce((sum, f) => sum + f.amount, 0);
 
   return {
     chama,
@@ -26,6 +34,10 @@ async function getMemberData(userId: string, chamaId: string) {
     totalLoanBalance,
     recentContributions: contributions.slice(0, 5),
     recentLoans: loans.slice(0, 3),
+    pendingFines: fines.length,
+    totalPendingFines,
+    pendingWelfareRequests: welfareRequests.filter(r => r.status === 'pending').length,
+    guarantorRequests: guarantorLoans.length,
   };
 }
 
@@ -41,7 +53,7 @@ export default async function MemberDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="My Total Savings"
           value={`KES ${data.totalContributions.toLocaleString()}`}
@@ -57,13 +69,47 @@ export default async function MemberDashboard() {
           color="purple"
         />
         <StatCard
-          title="Pending Requests"
-          value={data.pendingLoans}
-          subtitle="Awaiting approval"
-          icon={<Calendar className="w-6 h-6" />}
-          color="orange"
+          title="Pending Fines"
+          value={data.pendingFines}
+          subtitle={`KES ${data.totalPendingFines.toLocaleString()}`}
+          icon={<AlertCircle className="w-6 h-6" />}
+          color="red"
+          link="/member/fines"
+        />
+        <StatCard
+          title="Welfare Requests"
+          value={data.pendingWelfareRequests}
+          subtitle="Pending approval"
+          icon={<Heart className="w-6 h-6" />}
+          color="pink"
+          link="/member/welfare"
         />
       </div>
+
+      {/* Guarantor Requests Alert */}
+      {data.guarantorRequests > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+          <div className="flex items-start">
+            <AlertCircle className="h-5 w-5 text-yellow-400 mt-0.5" />
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">
+                Guarantor Request{data.guarantorRequests > 1 ? 's' : ''}
+              </h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>
+                  You have {data.guarantorRequests} loan guarantor request{data.guarantorRequests > 1 ? 's' : ''} waiting for your response.
+                </p>
+                <a
+                  href="/member/loans"
+                  className="mt-2 inline-block font-medium text-yellow-800 hover:text-yellow-900 underline"
+                >
+                  Review Requests →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Chama Rules */}
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -204,21 +250,25 @@ function StatCard({
   subtitle,
   icon,
   color,
+  link,
 }: {
   title: string;
   value: string | number;
   subtitle?: string;
   icon: React.ReactNode;
   color: string;
+  link?: string;
 }) {
   const colorClasses = {
     green: 'bg-green-500',
     purple: 'bg-purple-500',
     orange: 'bg-orange-500',
+    red: 'bg-red-500',
+    pink: 'bg-pink-500',
   }[color];
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+  const content = (
+    <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-600 mb-1">{title}</p>
@@ -229,6 +279,12 @@ function StatCard({
       </div>
     </div>
   );
+
+  if (link) {
+    return <a href={link}>{content}</a>;
+  }
+
+  return content;
 }
 
 function RuleItem({ label, value }: { label: string; value: string }) {

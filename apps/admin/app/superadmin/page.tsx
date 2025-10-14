@@ -1,5 +1,5 @@
-import { connectDB, Chama, User, Contribution, Loan } from '@chama-app/database';
-import { Building2, Users, DollarSign, TrendingUp, Activity } from 'lucide-react';
+import { connectDB, Chama, User, Contribution, Loan, Meeting, Fine, RotationCycle, WelfareRequest } from '@chama-app/database';
+import { Building2, Users, DollarSign, TrendingUp, Activity, Calendar, AlertCircle, Repeat, Heart } from 'lucide-react';
 import PlatformGrowthChart from '@/components/PlatformGrowthChart';
 
 async function getStats() {
@@ -15,6 +15,10 @@ async function getStats() {
     recentChamas,
     chamaGrowth,
     userGrowth,
+    totalMeetings,
+    totalFines,
+    activeRotations,
+    totalWelfareRequests,
   ] = await Promise.all([
     Chama.countDocuments(),
     Chama.countDocuments({ isActive: true }),
@@ -61,6 +65,16 @@ async function getStats() {
       { $sort: { '_id.year': 1, '_id.month': 1 } },
       { $limit: 6 },
     ]),
+    // Platform-wide meeting stats
+    Meeting.countDocuments(),
+    // Platform-wide fines stats
+    Fine.aggregate([
+      { $group: { _id: null, total: { $sum: '$amount' } } },
+    ]),
+    // Platform-wide active rotations
+    RotationCycle.countDocuments({ status: 'active' }),
+    // Platform-wide welfare requests
+    WelfareRequest.countDocuments(),
   ]);
 
   // Format growth data for chart
@@ -96,6 +110,10 @@ async function getStats() {
     totalLoansAmount: totalLoans[0]?.total || 0,
     recentChamas,
     growthData: formattedGrowthData,
+    totalMeetings,
+    totalFinesAmount: totalFines[0]?.total || 0,
+    activeRotations,
+    totalWelfareRequests,
   };
 }
 
@@ -109,7 +127,7 @@ export default async function SuperAdminPage() {
         <p className="text-gray-600 mt-2">Monitor all chamas and platform activity</p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Main */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Chamas"
@@ -136,6 +154,34 @@ export default async function SuperAdminPage() {
           value={`KES ${stats.totalLoansAmount.toLocaleString()}`}
           icon={<TrendingUp className="w-6 h-6" />}
           color="orange"
+        />
+      </div>
+
+      {/* Stats Grid - Platform Activities */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Meetings"
+          value={stats.totalMeetings}
+          icon={<Calendar className="w-6 h-6" />}
+          color="blue"
+        />
+        <StatCard
+          title="Total Fines"
+          value={`KES ${stats.totalFinesAmount.toLocaleString()}`}
+          icon={<AlertCircle className="w-6 h-6" />}
+          color="red"
+        />
+        <StatCard
+          title="Active Rotations"
+          value={stats.activeRotations}
+          icon={<Repeat className="w-6 h-6" />}
+          color="teal"
+        />
+        <StatCard
+          title="Welfare Requests"
+          value={stats.totalWelfareRequests}
+          icon={<Heart className="w-6 h-6" />}
+          color="pink"
         />
       </div>
 
@@ -205,6 +251,9 @@ function StatCard({
     blue: 'bg-blue-500',
     green: 'bg-green-500',
     orange: 'bg-orange-500',
+    red: 'bg-red-500',
+    teal: 'bg-teal-500',
+    pink: 'bg-pink-500',
   }[color];
 
   return (
