@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { Users, DollarSign, TrendingUp, FileText, Settings, Calendar, AlertCircle, Repeat, Heart } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, FileText, Settings, Calendar, AlertCircle, Repeat, Heart, Upload } from 'lucide-react';
 import SignOutButton from '@/components/SignOutButton';
 
 export default async function DashboardLayout({
@@ -42,6 +42,7 @@ export default async function DashboardLayout({
             <nav className="bg-white rounded-lg shadow-sm p-4 space-y-2">
               <NavLink href="/v1/client" icon={<TrendingUp />} label="Dashboard" />
               <NavLink href="/v1/client/members" icon={<Users />} label="Members" />
+              <NavLink href="/v1/client/bulk-import" icon={<Upload />} label="Bulk Import" />
               <NavLink href="/v1/client/contributions" icon={<DollarSign />} label="Contributions" />
               <NavLink href="/v1/client/loans" icon={<FileText />} label="Loans" />
               <NavLink href="/v1/client/rotations" icon={<Repeat />} label="Merry-Go-Round" />
