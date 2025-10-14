@@ -2,7 +2,8 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { Home, DollarSign, TrendingUp, User, LogOut, AlertCircle, Heart } from 'lucide-react';
+import { Home, DollarSign, TrendingUp, User, AlertCircle, Heart } from 'lucide-react';
+import SignOutButton from '@/components/SignOutButton';
 
 export default async function MemberLayout({
   children,
@@ -38,13 +39,7 @@ export default async function MemberLayout({
                 Welcome, {session.user.name}
               </p>
             </div>
-            <Link
-              href="/api/auth/signout"
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
-            </Link>
+            <SignOutButton />
           </div>
         </div>
       </header>

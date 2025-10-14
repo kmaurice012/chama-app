@@ -19,7 +19,7 @@ async function getUserProfile(userId: string, chamaId: string) {
   const totalBorrowed = activeLoans.reduce((sum, l) => sum + l.amount, 0);
 
   // Calculate membership duration
-  const joinDate = new Date(user!.createdAt);
+  const joinDate = new Date((user as any)?.createdAt || new Date());
   const now = new Date();
   const monthsDiff = (now.getFullYear() - joinDate.getFullYear()) * 12 + (now.getMonth() - joinDate.getMonth());
 
@@ -32,7 +32,7 @@ async function getUserProfile(userId: string, chamaId: string) {
     totalLoanBalance,
     totalBorrowed,
     membershipMonths: monthsDiff,
-    maxLoanEligible: totalContributions * (chama?.maxLoanMultiplier || 3),
+    maxLoanEligible: totalContributions * ((chama as any)?.maxLoanMultiplier || 3),
   };
 }
 
@@ -51,21 +51,21 @@ export default async function ProfilePage() {
       <div className="bg-white rounded-lg shadow-sm p-8">
         <div className="flex items-start gap-6">
           <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full w-24 h-24 flex items-center justify-center text-3xl font-bold">
-            {data.user?.name?.charAt(0).toUpperCase()}
+            {(data.user as any)?.name?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-gray-900">{data.user?.name}</h3>
+            <h3 className="text-2xl font-bold text-gray-900">{(data.user as any)?.name || 'User'}</h3>
             <p className="text-gray-600 capitalize flex items-center gap-2 mt-1">
               <Shield className="w-4 h-4" />
-              {data.user?.role} Member
+              {(data.user as any)?.role || 'member'} Member
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <InfoItem icon={<Mail className="w-4 h-4" />} label="Email" value={data.user?.email || 'N/A'} />
-              <InfoItem icon={<Phone className="w-4 h-4" />} label="Phone" value={data.user?.phone || 'Not provided'} />
+              <InfoItem icon={<Mail className="w-4 h-4" />} label="Email" value={(data.user as any)?.email || 'N/A'} />
+              <InfoItem icon={<Phone className="w-4 h-4" />} label="Phone" value={(data.user as any)?.phone || 'Not provided'} />
               <InfoItem
                 icon={<Calendar className="w-4 h-4" />}
                 label="Member Since"
-                value={new Date(data.user!.createdAt).toLocaleDateString('en-US', {
+                value={new Date((data.user as any)?.createdAt || new Date()).toLocaleDateString('en-US', {
                   month: 'long',
                   year: 'numeric',
                 })}
@@ -86,19 +86,19 @@ export default async function ProfilePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-gray-600 mb-1">Chama Name</p>
-            <p className="text-lg font-semibold text-gray-900">{data.chama?.name}</p>
+            <p className="text-lg font-semibold text-gray-900">{(data.chama as any)?.name || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600 mb-1">Registration Number</p>
-            <p className="text-lg font-semibold text-gray-900">{data.chama?.registrationNumber || 'N/A'}</p>
+            <p className="text-lg font-semibold text-gray-900">{(data.chama as any)?.registrationNumber || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600 mb-1">Location</p>
-            <p className="text-lg font-semibold text-gray-900">{data.chama?.location || 'N/A'}</p>
+            <p className="text-lg font-semibold text-gray-900">{(data.chama as any)?.location || 'N/A'}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600 mb-1">Total Members</p>
-            <p className="text-lg font-semibold text-gray-900">{data.chama?.totalMembers || 0}</p>
+            <p className="text-lg font-semibold text-gray-900">{(data.chama as any)?.totalMembers || 0}</p>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default async function ProfilePage() {
             </div>
           </div>
           <p className="text-xs text-blue-600 mt-3">
-            Based on {data.chama?.maxLoanMultiplier}x your total contributions
+            Based on {(data.chama as any)?.maxLoanMultiplier || 3}x your total contributions
           </p>
         </div>
       </div>
@@ -150,27 +150,27 @@ export default async function ProfilePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <RuleItem
             label="Monthly Contribution"
-            value={`KES ${data.chama?.contributionAmount.toLocaleString()}`}
+            value={`KES ${(data.chama as any)?.contributionAmount?.toLocaleString() || '0'}`}
           />
           <RuleItem
             label="Contribution Frequency"
-            value={data.chama?.contributionFrequency || 'N/A'}
+            value={(data.chama as any)?.contributionFrequency || 'N/A'}
           />
           <RuleItem
             label="Loan Interest Rate"
-            value={`${data.chama?.loanInterestRate}%`}
+            value={`${(data.chama as any)?.loanInterestRate || 0}%`}
           />
           <RuleItem
             label="Max Loan Multiplier"
-            value={`${data.chama?.maxLoanMultiplier}x savings`}
+            value={`${(data.chama as any)?.maxLoanMultiplier || 3}x savings`}
           />
           <RuleItem
             label="Late Payment Fine"
-            value={data.chama?.latePaymentFine ? `KES ${data.chama.latePaymentFine}` : 'Not set'}
+            value={(data.chama as any)?.latePaymentFine ? `KES ${(data.chama as any).latePaymentFine}` : 'Not set'}
           />
           <RuleItem
             label="Missed Meeting Fine"
-            value={data.chama?.missedMeetingFine ? `KES ${data.chama.missedMeetingFine}` : 'Not set'}
+            value={(data.chama as any)?.missedMeetingFine ? `KES ${(data.chama as any).missedMeetingFine}` : 'Not set'}
           />
         </div>
       </div>

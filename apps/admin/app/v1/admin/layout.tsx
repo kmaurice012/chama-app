@@ -2,7 +2,8 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { LayoutDashboard, Users, Building2, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Building2 } from 'lucide-react';
+import SignOutButton from '@/components/SignOutButton';
 
 export default async function SuperAdminLayout({
   children,
@@ -29,13 +30,7 @@ export default async function SuperAdminLayout({
                 Welcome, {session.user.name}
               </p>
             </div>
-            <Link
-              href="/api/auth/signout"
-              className="flex items-center gap-2 text-white hover:text-purple-100 transition"
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
-            </Link>
+            <SignOutButton variant="white" />
           </div>
         </div>
       </header>
