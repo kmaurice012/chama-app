@@ -1,0 +1,36 @@
+Member Email,Amount,Month,Year,Payment Date,Payment Method,Transaction Ref,Status,Notes
+grace.wanjiru@gmail.com,1000,10,2024,2024-10-05,mpesa,QA12345678,paid,October contribution
+peter.kamau@gmail.com,1000,10,2024,2024-10-06,mpesa,QB23456789,paid,October contribution
+mary.akinyi@gmail.com,1000,10,2024,2024-10-07,cash,,paid,October contribution - paid in cash
+david.mwangi@gmail.com,1000,10,2024,2024-10-08,bank,TRX987654,paid,October contribution - bank transfer
+jane.nyambura@gmail.com,1000,10,2024,2024-10-10,mpesa,QC34567890,paid,October contribution
+samuel.ochieng@gmail.com,1000,10,2024,2024-10-12,mpesa,QD45678901,paid,October contribution
+lucy.wambui@gmail.com,1000,10,2024,2024-10-15,cash,,paid,October contribution
+joseph.kiptoo@gmail.com,1000,10,2024,2024-10-18,mpesa,QE56789012,paid,October contribution
+ann.wangari@gmail.com,1000,10,2024,2024-10-20,mpesa,QF67890123,paid,October contribution
+michael.otieno@gmail.com,1000,10,2024,2024-10-22,bank,TRX876543,paid,October contribution
+grace.wanjiru@gmail.com,1000,11,2024,2024-11-05,mpesa,QG78901234,paid,November contribution
+peter.kamau@gmail.com,1000,11,2024,2024-11-06,mpesa,QH89012345,paid,November contribution
+mary.akinyi@gmail.com,1000,11,2024,2024-11-08,cash,,paid,November contribution
+david.mwangi@gmail.com,1000,11,2024,2024-11-09,mpesa,QI90123456,paid,November contribution
+jane.nyambura@gmail.com,1000,11,2024,2024-11-11,mpesa,QJ01234567,paid,November contribution
+samuel.ochieng@gmail.com,1000,11,2024,2024-11-13,bank,TRX765432,paid,November contribution
+lucy.wambui@gmail.com,1000,11,2024,2024-11-15,mpesa,QK12345678,paid,November contribution
+joseph.kiptoo@gmail.com,1000,11,2024,2024-11-17,cash,,paid,November contribution
+ann.wangari@gmail.com,1000,11,2024,2024-11-19,mpesa,QL23456789,paid,November contribution
+michael.otieno@gmail.com,1000,11,2024,2024-11-21,mpesa,QM34567890,paid,November contribution
+grace.wanjiru@gmail.com,1000,12,2024,2024-12-05,mpesa,QN45678901,paid,December contribution
+peter.kamau@gmail.com,1000,12,2024,2024-12-06,cash,,paid,December contribution
+mary.akinyi@gmail.com,1000,12,2024,2024-12-08,mpesa,QO56789012,paid,December contribution
+david.mwangi@gmail.com,1000,12,2024,2024-12-09,bank,TRX654321,paid,December contribution
+jane.nyambura@gmail.com,1000,12,2024,2024-12-11,mpesa,QP67890123,paid,December contribution
+samuel.ochieng@gmail.com,1000,12,2024,2024-12-13,mpesa,QQ78901234,paid,December contribution
+lucy.wambui@gmail.com,1000,12,2024,2024-12-15,cash,,paid,December contribution
+joseph.kiptoo@gmail.com,1000,12,2024,2024-12-17,mpesa,QR89012345,paid,December contribution
+ann.wangari@gmail.com,1000,12,2024,2024-12-19,mpesa,QS90123456,paid,December contribution
+michael.otieno@gmail.com,1000,12,2024,2024-12-21,bank,TRX543210,paid,December contribution
+grace.wanjiru@gmail.com,1000,1,2025,2025-01-05,mpesa,QT01234567,paid,January 2025 contribution
+peter.kamau@gmail.com,1000,1,2025,2025-01-06,mpesa,QU12345678,paid,January 2025 contribution
+mary.akinyi@gmail.com,1000,1,2025,2025-01-08,cash,,paid,January 2025 contribution
+david.mwangi@gmail.com,1000,1,2025,2025-01-09,mpesa,QV23456789,paid,January 2025 contribution
+jane.nyambura@gmail.com,1000,1,2025,2025-01-11,mpesa,QW34567890,paid,January 2025 contribution
