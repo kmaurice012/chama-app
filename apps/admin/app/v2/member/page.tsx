@@ -74,7 +74,7 @@ export default async function MemberDashboard() {
           subtitle={`KES ${data.totalPendingFines.toLocaleString()}`}
           icon={<AlertCircle className="w-6 h-6" />}
           color="red"
-          link="/member/fines"
+          link="/v2/member/fines"
         />
         <StatCard
           title="Welfare Requests"
@@ -82,7 +82,7 @@ export default async function MemberDashboard() {
           subtitle="Pending approval"
           icon={<Heart className="w-6 h-6" />}
           color="pink"
-          link="/member/welfare"
+          link="/v2/member/welfare"
         />
       </div>
 
@@ -100,7 +100,7 @@ export default async function MemberDashboard() {
                   You have {data.guarantorRequests} loan guarantor request{data.guarantorRequests > 1 ? 's' : ''} waiting for your response.
                 </p>
                 <a
-                  href="/member/loans"
+                  href="/v2/member/loans"
                   className="mt-2 inline-block font-medium text-yellow-800 hover:text-yellow-900 underline"
                 >
                   Review Requests →
