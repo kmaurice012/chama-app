@@ -6,7 +6,7 @@ import { connectDB, Loan } from '@chama-app/database';
 // POST record loan repayment
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -27,7 +27,7 @@ export async function POST(
     await connectDB();
 
     const loan = await Loan.findOne({
-      _id: params.id,
+      _id: await params.then(p => p.id),
       chamaId: session.user.chamaId,
     });
 

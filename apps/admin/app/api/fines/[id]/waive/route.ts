@@ -4,7 +4,7 @@ import { connectDB, Fine, User } from '@chama-app/database';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
@@ -22,7 +22,7 @@ export async function POST(
     const body = await req.json();
     const { waiverReason } = body;
 
-    const fine = await Fine.findById(params.id);
+    const fine = await Fine.findById(await params.then(p => p.id));
     if (!fine) {
       return NextResponse.json({ error: 'Fine not found' }, { status: 404 });
     }

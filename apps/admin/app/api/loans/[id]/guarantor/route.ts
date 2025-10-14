@@ -4,7 +4,7 @@ import { connectDB, Loan, User } from '@chama-app/database';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
@@ -22,7 +22,7 @@ export async function POST(
     const body = await req.json();
     const { action, rejectionReason } = body; // action: 'accept' or 'reject'
 
-    const loan = await Loan.findById(params.id);
+    const loan = await Loan.findById(await params.then(p => p.id));
     if (!loan) {
       return NextResponse.json({ error: 'Loan not found' }, { status: 404 });
     }

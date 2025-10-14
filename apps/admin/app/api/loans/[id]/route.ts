@@ -6,7 +6,7 @@ import { connectDB, Loan } from '@chama-app/database';
 // GET single loan
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +17,7 @@ export async function GET(
     await connectDB();
 
     const loan = await Loan.findOne({
-      _id: params.id,
+      _id: await params.then(p => p.id),
       chamaId: session.user.chamaId,
     })
       .populate('userId', 'name email phone')
@@ -37,7 +37,7 @@ export async function GET(
 // PATCH update loan status (approve/reject/disburse)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -51,7 +51,7 @@ export async function PATCH(
     await connectDB();
 
     const loan = await Loan.findOne({
-      _id: params.id,
+      _id: await params.then(p => p.id),
       chamaId: session.user.chamaId,
     });
 
@@ -101,7 +101,7 @@ export async function PATCH(
     }
 
     const updatedLoan = await Loan.findByIdAndUpdate(
-      params.id,
+      await params.then(p => p.id),
       { $set: updateData },
       { new: true }
     ).populate('userId', 'name email');

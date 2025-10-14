@@ -4,7 +4,7 @@ import { connectDB, RotationDistribution, RotationCycle, User, Chama } from '@ch
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
@@ -22,7 +22,7 @@ export async function POST(
     const body = await req.json();
     const { contributions, notes } = body;
 
-    const distribution = await RotationDistribution.findById(params.id);
+    const distribution = await RotationDistribution.findById(await params.then(p => p.id));
     if (!distribution) {
       return NextResponse.json({ error: 'Distribution not found' }, { status: 404 });
     }

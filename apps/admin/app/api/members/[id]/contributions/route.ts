@@ -5,7 +5,7 @@ import { connectDB, Contribution } from '@chama-app/database';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +17,7 @@ export async function GET(
     await connectDB();
 
     const contributions = await Contribution.find({
-      userId: params.id,
+      userId: await params.then(p => p.id),
       chamaId: session.user.chamaId,
     }).sort({ year: -1, month: -1 });
 

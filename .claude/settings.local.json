@@ -7,7 +7,15 @@
       "Bash(git pull:*)",
       "Bash(git stash:*)",
       "Bash(git push:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfix: Correct import paths in new API routes\n\nFix module resolution errors by changing imports from ''@/packages/database'' \nto ''@chama-app/database'' in all new feature API routes.\n\nRoutes Fixed:\n- Rotations: route.ts, [id]/distribute/route.ts\n- Meetings: route.ts, [id]/attendance/route.ts\n- Fines: route.ts, [id]/pay/route.ts, [id]/waive/route.ts\n- Welfare: contributions/route.ts, requests/route.ts, requests/[id]/approve/route.ts\n- Loans: [id]/guarantor/route.ts\n\nThis resolves the \"Module not found: Can't resolve '@/packages/database '\" \nerror that was preventing the application from building.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: Correct import paths in new API routes\n\nFix module resolution errors by changing imports from ''@/packages/database'' \nto ''@chama-app/database'' in all new feature API routes.\n\nRoutes Fixed:\n- Rotations: route.ts, [id]/distribute/route.ts\n- Meetings: route.ts, [id]/attendance/route.ts\n- Fines: route.ts, [id]/pay/route.ts, [id]/waive/route.ts\n- Welfare: contributions/route.ts, requests/route.ts, requests/[id]/approve/route.ts\n- Loans: [id]/guarantor/route.ts\n\nThis resolves the \"Module not found: Can't resolve '@/packages/database '\" \nerror that was preventing the application from building.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(npm run build:admin:*)",
+      "Bash(for file in fines/[id]/waive/route.ts loans/[id]/guarantor/route.ts loans/[id]/repay/route.ts loans/[id]/route.ts meetings/[id]/attendance/route.ts members/[id]/contributions/route.ts members/[id]/route.ts rotations/[id]/distribute/route.ts welfare/requests/[id]/approve/route.ts)",
+      "Bash(do)",
+      "Bash(if [ -f \"$file\" ])",
+      "Bash(then)",
+      "Bash(fi)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

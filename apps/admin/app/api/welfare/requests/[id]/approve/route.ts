@@ -4,7 +4,7 @@ import { connectDB, WelfareRequest, User, Chama } from '@chama-app/database';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
@@ -22,7 +22,7 @@ export async function POST(
     const body = await req.json();
     const { approvedAmount } = body;
 
-    const request = await WelfareRequest.findById(params.id);
+    const request = await WelfareRequest.findById(await params.then(p => p.id));
     if (!request) {
       return NextResponse.json({ error: 'Request not found' }, { status: 404 });
     }

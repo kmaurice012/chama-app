@@ -4,7 +4,7 @@ import { connectDB, Meeting, User, Fine, Chama } from '@chama-app/database';
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
@@ -22,7 +22,7 @@ export async function PATCH(
     const body = await req.json();
     const { attendance } = body; // Array of { userId, status, checkInTime }
 
-    const meeting = await Meeting.findById(params.id);
+    const meeting = await Meeting.findById(await params.then(p => p.id));
     if (!meeting) {
       return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
     }
