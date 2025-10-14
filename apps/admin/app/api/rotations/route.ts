@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectDB, RotationCycle, RotationDistribution, User } from '@/packages/database';
+import { connectDB, RotationCycle, RotationDistribution, User } from '@chama-app/database';
 
 export async function GET(req: NextRequest) {
   try {

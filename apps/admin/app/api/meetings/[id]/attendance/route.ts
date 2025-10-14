@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectDB, Meeting, User, Fine, Chama } from '@/packages/database';
+import { connectDB, Meeting, User, Fine, Chama } from '@chama-app/database';
 
 export async function PATCH(
   req: NextRequest,

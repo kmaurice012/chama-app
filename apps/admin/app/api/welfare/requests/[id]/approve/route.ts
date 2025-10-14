@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectDB, WelfareRequest, User, Chama } from '@/packages/database';
+import { connectDB, WelfareRequest, User, Chama } from '@chama-app/database';
 
 export async function POST(
   req: NextRequest,
