@@ -13,7 +13,7 @@ async function getDashboardData(chamaId: string) {
     Chama.findById(chamaId),
     User.countDocuments({ chamaId, isActive: true }),
     Contribution.aggregate([
-      { $match: { chamaId: chamaId as any } },
+      { $match: { chamaId: chamaId as any, status: 'paid' } },
       {
         $group: {
           _id: null,
@@ -33,12 +33,12 @@ async function getDashboardData(chamaId: string) {
     ]),
     // Get contribution trends by month (last 6 months)
     Contribution.aggregate([
-      { $match: { chamaId: chamaId as any } },
+      { $match: { chamaId: chamaId as any, status: 'paid' } },
       {
         $group: {
           _id: {
-            year: { $year: '$createdAt' },
-            month: { $month: '$createdAt' },
+            year: { $year: '$paymentDate' },
+            month: { $month: '$paymentDate' },
           },
           amount: { $sum: '$amount' },
         },

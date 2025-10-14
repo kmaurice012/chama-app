@@ -13,7 +13,10 @@ async function getUserProfile(userId: string, chamaId: string) {
     Loan.find({ userId, chamaId }),
   ]);
 
-  const totalContributions = contributions.reduce((sum, c) => sum + c.amount, 0);
+  // Only count paid contributions for accurate total
+  const totalContributions = contributions
+    .filter((c) => c.status === 'paid')
+    .reduce((sum, c) => sum + c.amount, 0);
   const activeLoans = loans.filter((l) => l.status === 'disbursed');
   const totalLoanBalance = activeLoans.reduce((sum, l) => sum + l.balance, 0);
   const totalBorrowed = activeLoans.reduce((sum, l) => sum + l.amount, 0);

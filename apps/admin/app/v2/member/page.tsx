@@ -19,7 +19,10 @@ async function getMemberData(userId: string, chamaId: string) {
     }).populate('userId', 'name'),
   ]);
 
-  const totalContributions = contributions.reduce((sum, c) => sum + c.amount, 0);
+  // Only count paid contributions for accurate total savings
+  const totalContributions = contributions
+    .filter((c) => c.status === 'paid')
+    .reduce((sum, c) => sum + c.amount, 0);
   const pendingLoans = loans.filter((l) => l.status === 'pending').length;
   const activeLoans = loans.filter((l) => l.status === 'disbursed');
   const totalLoanBalance = activeLoans.reduce((sum, l) => sum + l.balance, 0);

@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
       User.countDocuments({ role: { $ne: 'superadmin' } }),
       User.countDocuments({ role: { $ne: 'superadmin' }, isActive: true }),
       Contribution.aggregate([
+        { $match: { status: 'paid' } },
         { $group: { _id: null, total: { $sum: '$amount' } } },
       ]),
       Loan.aggregate([
