@@ -1,0 +1,19 @@
+{
+  "name": "chama-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chama Management System - MVP",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:admin": "npm run dev --workspace=apps/admin",
+    "dev:mobile": "npm run start --workspace=apps/mobile",
+    "build:admin": "npm run build --workspace=apps/admin",
+    "lint": "npm run lint --workspaces"
+  },
+  "keywords": ["chama", "savings", "fintech", "kenya"],
+  "author": "",
+  "license": "MIT"
+}
