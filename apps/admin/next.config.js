@@ -84,13 +84,7 @@ const nextConfig = {
       };
     }
 
-    // Optimize bundle size
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true,
-      minimize: true,
-    };
-
+    // Next.js already handles optimization, tree shaking, and minification
     return config;
   },
 }
