@@ -1,15 +1,15 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
-import { connectDB, Chama, User, Contribution, Loan } from '@chama-app/database';
-import { Users, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { connectDB, Chama, User, Contribution, Loan, Meeting, Fine, RotationCycle, WelfareRequest } from '@chama-app/database';
+import { Users, DollarSign, TrendingUp, AlertCircle, Calendar, Repeat, Heart } from 'lucide-react';
 import ContributionChart from '@/components/ContributionChart';
 import LoanStatusChart from '@/components/LoanStatusChart';
 
 async function getDashboardData(chamaId: string) {
   await connectDB();
 
-  const [chama, members, contributions, loans, contributionTrends, loansByStatus] = await Promise.all([
+  const [chama, members, contributions, loans, contributionTrends, loansByStatus, upcomingMeetings, pendingFines, activeRotations, pendingWelfareRequests] = await Promise.all([
     Chama.findById(chamaId),
     User.countDocuments({ chamaId, isActive: true }),
     Contribution.aggregate([
@@ -56,6 +56,33 @@ async function getDashboardData(chamaId: string) {
         },
       },
     ]),
+    // Get upcoming meetings
+    Meeting.countDocuments({
+      chamaId: chamaId as any,
+      scheduledDate: { $gte: new Date() },
+      status: { $in: ['scheduled', 'ongoing'] },
+    }),
+    // Get pending fines count and total
+    Fine.aggregate([
+      { $match: { chamaId: chamaId as any, status: 'pending' } },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+          total: { $sum: '$amount' },
+        },
+      },
+    ]),
+    // Get active rotations
+    RotationCycle.countDocuments({
+      chamaId: chamaId as any,
+      status: 'active',
+    }),
+    // Get pending welfare requests
+    WelfareRequest.countDocuments({
+      chamaId: chamaId as any,
+      status: 'pending',
+    }),
   ]);
 
   const totalContributions = contributions[0]?.totalContributions || 0;
@@ -94,6 +121,12 @@ async function getDashboardData(chamaId: string) {
     availableFunds: totalContributions - totalLoansAmount,
     contributionTrends: formattedContributionTrends,
     loanStatusData: formattedLoanStatus,
+    upcomingMeetings,
+    pendingFinesCount: pendingFines[0]?.count || 0,
+    pendingFinesTotal: pendingFines[0]?.total || 0,
+    activeRotations,
+    pendingWelfareRequests,
+    welfareBalance: chama?.totalWelfareFund || 0,
   };
 }
 
@@ -143,6 +176,40 @@ export default async function DashboardPage() {
         />
       </div>
 
+      {/* New Features Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Upcoming Meetings"
+          value={data.upcomingMeetings}
+          icon={<Calendar className="w-6 h-6" />}
+          color="blue"
+          link="/dashboard/meetings"
+        />
+        <StatCard
+          title="Pending Fines"
+          value={data.pendingFinesCount}
+          subtitle={`KES ${data.pendingFinesTotal.toLocaleString()}`}
+          icon={<AlertCircle className="w-6 h-6" />}
+          color="red"
+          link="/dashboard/fines"
+        />
+        <StatCard
+          title="Active Rotations"
+          value={data.activeRotations}
+          icon={<Repeat className="w-6 h-6" />}
+          color="teal"
+          link="/dashboard/rotations"
+        />
+        <StatCard
+          title="Welfare Fund"
+          value={`KES ${data.welfareBalance.toLocaleString()}`}
+          subtitle={data.pendingWelfareRequests ? `${data.pendingWelfareRequests} pending requests` : undefined}
+          icon={<Heart className="w-6 h-6" />}
+          color="pink"
+          link="/dashboard/welfare"
+        />
+      </div>
+
       {/* Chama Details */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Chama Details</h3>
@@ -176,10 +243,13 @@ export default async function DashboardPage() {
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <ActionButton href="/dashboard/members" label="Add Member" />
           <ActionButton href="/dashboard/contributions" label="Record Contribution" />
           <ActionButton href="/dashboard/loans" label="Manage Loans" />
+          <ActionButton href="/dashboard/meetings" label="Schedule Meeting" />
+          <ActionButton href="/dashboard/rotations" label="Create Rotation" />
+          <ActionButton href="/dashboard/welfare/requests" label="Submit Welfare Request" />
         </div>
       </div>
     </div>
@@ -192,22 +262,27 @@ function StatCard({
   subtitle,
   icon,
   color,
+  link,
 }: {
   title: string;
   value: string | number;
   subtitle?: string;
   icon: React.ReactNode;
   color: string;
+  link?: string;
 }) {
   const colorClasses = {
     blue: 'bg-blue-500',
     green: 'bg-green-500',
     purple: 'bg-purple-500',
     indigo: 'bg-indigo-500',
+    red: 'bg-red-500',
+    teal: 'bg-teal-500',
+    pink: 'bg-pink-500',
   }[color];
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+  const content = (
+    <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-600 mb-1">{title}</p>
@@ -218,6 +293,16 @@ function StatCard({
       </div>
     </div>
   );
+
+  if (link) {
+    return (
+      <a href={link} className="block">
+        {content}
+      </a>
+    );
+  }
+
+  return content;
 }
 
 function DetailItem({ label, value }: { label: string; value: string }) {

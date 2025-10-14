@@ -8,6 +8,13 @@ export interface ILoanRepayment {
   recordedBy: mongoose.Types.ObjectId;
 }
 
+export interface IGuarantor {
+  userId: mongoose.Types.ObjectId;
+  status: 'pending' | 'accepted' | 'rejected';
+  responseDate?: Date;
+  rejectionReason?: string;
+}
+
 export interface ILoan extends Document {
   _id: string;
   chamaId: mongoose.Types.ObjectId;
@@ -25,11 +32,33 @@ export interface ILoan extends Document {
   repayments: ILoanRepayment[];
   amountPaid: number;
   balance: number;
-  guarantors?: mongoose.Types.ObjectId[];
+  guarantors: IGuarantor[];
+  requiresGuarantors: boolean;
+  minimumGuarantors: number;
   notes?: string;
+  rejectionReason?: string;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const GuarantorSchema = new Schema<IGuarantor>({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending',
+  },
+  responseDate: {
+    type: Date,
+  },
+  rejectionReason: {
+    type: String,
+  },
+}, { _id: false });
 
 const LoanRepaymentSchema = new Schema<ILoanRepayment>({
   amount: {
@@ -118,11 +147,20 @@ const LoanSchema = new Schema<ILoan>(
       type: Number,
       required: true,
     },
-    guarantors: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    }],
+    guarantors: [GuarantorSchema],
+    requiresGuarantors: {
+      type: Boolean,
+      default: true,
+    },
+    minimumGuarantors: {
+      type: Number,
+      default: 2,
+      min: 0,
+    },
     notes: {
+      type: String,
+    },
+    rejectionReason: {
       type: String,
     },
   },
