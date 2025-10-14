@@ -19,11 +19,22 @@ export async function GET(request: NextRequest) {
 
     const query: any = { chamaId: session.user.chamaId };
     if (status) query.status = status;
-    if (userId) query.userId = userId;
+
+    // Members can only see their own loans or loans they're guaranteeing
+    if (session.user.role === 'member') {
+      query.$or = [
+        { userId: session.user.id },
+        { 'guarantors.userId': session.user.id }
+      ];
+    } else if (userId) {
+      // Admins can filter by userId
+      query.userId = userId;
+    }
 
     const loans = await Loan.find(query)
       .populate('userId', 'name email phone')
       .populate('approvedBy', 'name')
+      .populate('guarantors.userId', 'name email phone')
       .sort({ requestDate: -1 });
 
     return NextResponse.json({ loans }, { status: 200 });
