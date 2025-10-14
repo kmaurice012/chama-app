@@ -29,7 +29,18 @@ export default function LoginPage() {
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push('/dashboard');
+        // Redirect to appropriate dashboard based on role
+        // We need to fetch session to get role
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
+
+        if (session?.user?.role === 'superadmin') {
+          router.push('/v1/admin');
+        } else if (session?.user?.role === 'admin') {
+          router.push('/v1/client');
+        } else {
+          router.push('/v2/member');
+        }
         router.refresh();
       }
     } catch (error) {

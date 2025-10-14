@@ -15,7 +15,8 @@ export default async function SuperAdminLayout({
     redirect('/auth/login');
   }
 
-  return (
+  // Redirect to new versioned route
+  redirect('/v1/admin');
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg">

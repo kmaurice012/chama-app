@@ -15,15 +15,7 @@ export default async function DashboardLayout({
     redirect('/auth/login');
   }
 
-  // Redirect to new versioned routes based on role
-  if (session.user.role === 'superadmin') {
-    redirect('/v1/admin');
-  } else if (session.user.role === 'member') {
-    redirect('/v2/member');
-  }
-
-  // Redirect admins to new client route
-  redirect('/v1/client');
+  return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
@@ -53,15 +45,15 @@ export default async function DashboardLayout({
           {/* Sidebar Navigation */}
           <aside className="w-64 flex-shrink-0">
             <nav className="bg-white rounded-lg shadow-sm p-4 space-y-2">
-              <NavLink href="/dashboard" icon={<TrendingUp />} label="Dashboard" />
-              <NavLink href="/dashboard/members" icon={<Users />} label="Members" />
-              <NavLink href="/dashboard/contributions" icon={<DollarSign />} label="Contributions" />
-              <NavLink href="/dashboard/loans" icon={<FileText />} label="Loans" />
-              <NavLink href="/dashboard/rotations" icon={<Repeat />} label="Merry-Go-Round" />
-              <NavLink href="/dashboard/meetings" icon={<Calendar />} label="Meetings" />
-              <NavLink href="/dashboard/fines" icon={<AlertCircle />} label="Fines" />
-              <NavLink href="/dashboard/welfare" icon={<Heart />} label="Welfare" />
-              <NavLink href="/dashboard/settings" icon={<Settings />} label="Settings" />
+              <NavLink href="/v1/client" icon={<TrendingUp />} label="Dashboard" />
+              <NavLink href="/v1/client/members" icon={<Users />} label="Members" />
+              <NavLink href="/v1/client/contributions" icon={<DollarSign />} label="Contributions" />
+              <NavLink href="/v1/client/loans" icon={<FileText />} label="Loans" />
+              <NavLink href="/v1/client/rotations" icon={<Repeat />} label="Merry-Go-Round" />
+              <NavLink href="/v1/client/meetings" icon={<Calendar />} label="Meetings" />
+              <NavLink href="/v1/client/fines" icon={<AlertCircle />} label="Fines" />
+              <NavLink href="/v1/client/welfare" icon={<Heart />} label="Welfare" />
+              <NavLink href="/v1/client/settings" icon={<Settings />} label="Settings" />
             </nav>
           </aside>
 

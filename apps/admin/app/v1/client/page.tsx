@@ -133,13 +133,10 @@ async function getDashboardData(chamaId: string) {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
 
-  // Redirect to versioned routes
+  // Redirect super admin to their dashboard
   if (session?.user.role === 'superadmin') {
-    redirect('/v1/admin');
+    redirect('/superadmin');
   }
-
-  // Redirect to new versioned client route
-  redirect('/v1/client');
 
   const data = await getDashboardData(session!.user.chamaId);
 

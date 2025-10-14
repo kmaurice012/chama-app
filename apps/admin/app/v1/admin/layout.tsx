@@ -2,46 +2,36 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { Home, DollarSign, TrendingUp, User, LogOut, AlertCircle, Heart } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, LogOut } from 'lucide-react';
 
-export default async function MemberLayout({
+export default async function SuperAdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session || session.user.role !== 'superadmin') {
     redirect('/auth/login');
   }
 
-  // Redirect to new versioned routes
-  if (session.user.role === 'admin') {
-    redirect('/v1/client');
-  }
-
-  if (session.user.role === 'superadmin') {
-    redirect('/v1/admin');
-  }
-
-  // Members should use new versioned route
-  redirect('/v2/member');
+  return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {session.user.chamaName}
+              <h1 className="text-2xl font-bold text-white">
+                Super Admin Dashboard
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-purple-100 text-sm mt-1">
                 Welcome, {session.user.name}
               </p>
             </div>
             <Link
               href="/api/auth/signout"
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-2 text-white hover:text-purple-100 transition"
             >
               <LogOut className="w-5 h-5" />
               Logout
@@ -55,12 +45,9 @@ export default async function MemberLayout({
           {/* Sidebar Navigation */}
           <aside className="w-64 flex-shrink-0">
             <nav className="bg-white rounded-lg shadow-sm p-4 space-y-2">
-              <NavLink href="/member" icon={<Home />} label="Dashboard" />
-              <NavLink href="/member/contributions" icon={<DollarSign />} label="My Contributions" />
-              <NavLink href="/member/loans" icon={<TrendingUp />} label="My Loans" />
-              <NavLink href="/member/fines" icon={<AlertCircle />} label="My Fines" />
-              <NavLink href="/member/welfare" icon={<Heart />} label="Welfare" />
-              <NavLink href="/member/profile" icon={<User />} label="Profile" />
+              <NavLink href="/v1/admin" icon={<LayoutDashboard />} label="Overview" />
+              <NavLink href="/v1/admin/chamas" icon={<Building2 />} label="All Chamas" />
+              <NavLink href="/v1/admin/users" icon={<Users />} label="All Users" />
             </nav>
           </aside>
 
@@ -84,7 +71,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition"
+      className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg transition"
     >
       <span className="w-5 h-5">{icon}</span>
       <span className="font-medium">{label}</span>

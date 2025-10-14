@@ -2,9 +2,9 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { Users, DollarSign, TrendingUp, FileText, LogOut, Settings, Calendar, AlertCircle, Repeat, Heart } from 'lucide-react';
+import { Home, DollarSign, TrendingUp, User, LogOut, AlertCircle, Heart } from 'lucide-react';
 
-export default async function DashboardLayout({
+export default async function MemberLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -15,15 +15,16 @@ export default async function DashboardLayout({
     redirect('/auth/login');
   }
 
-  // Redirect to new versioned routes based on role
-  if (session.user.role === 'superadmin') {
-    redirect('/v1/admin');
-  } else if (session.user.role === 'member') {
-    redirect('/v2/member');
+  // Redirect admins and superadmins to their dashboards
+  if (session.user.role === 'admin') {
+    redirect('/v1/client');
   }
 
-  // Redirect admins to new client route
-  redirect('/v1/client');
+  if (session.user.role === 'superadmin') {
+    redirect('/v1/admin');
+  }
+
+  return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
@@ -34,7 +35,7 @@ export default async function DashboardLayout({
                 {session.user.chamaName}
               </h1>
               <p className="text-sm text-gray-600">
-                Welcome, {session.user.name} ({session.user.role})
+                Welcome, {session.user.name}
               </p>
             </div>
             <Link
@@ -53,15 +54,12 @@ export default async function DashboardLayout({
           {/* Sidebar Navigation */}
           <aside className="w-64 flex-shrink-0">
             <nav className="bg-white rounded-lg shadow-sm p-4 space-y-2">
-              <NavLink href="/dashboard" icon={<TrendingUp />} label="Dashboard" />
-              <NavLink href="/dashboard/members" icon={<Users />} label="Members" />
-              <NavLink href="/dashboard/contributions" icon={<DollarSign />} label="Contributions" />
-              <NavLink href="/dashboard/loans" icon={<FileText />} label="Loans" />
-              <NavLink href="/dashboard/rotations" icon={<Repeat />} label="Merry-Go-Round" />
-              <NavLink href="/dashboard/meetings" icon={<Calendar />} label="Meetings" />
-              <NavLink href="/dashboard/fines" icon={<AlertCircle />} label="Fines" />
-              <NavLink href="/dashboard/welfare" icon={<Heart />} label="Welfare" />
-              <NavLink href="/dashboard/settings" icon={<Settings />} label="Settings" />
+              <NavLink href="/v2/member" icon={<Home />} label="Dashboard" />
+              <NavLink href="/v2/member/contributions" icon={<DollarSign />} label="My Contributions" />
+              <NavLink href="/v2/member/loans" icon={<TrendingUp />} label="My Loans" />
+              <NavLink href="/v2/member/fines" icon={<AlertCircle />} label="My Fines" />
+              <NavLink href="/v2/member/welfare" icon={<Heart />} label="Welfare" />
+              <NavLink href="/v2/member/profile" icon={<User />} label="Profile" />
             </nav>
           </aside>
 

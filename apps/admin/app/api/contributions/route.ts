@@ -19,7 +19,15 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const query: any = { chamaId: session.user.chamaId };
-    if (userId) query.userId = userId;
+
+    // Members can only see their own contributions
+    if (session.user.role === 'member') {
+      query.userId = session.user.id;
+    } else if (userId) {
+      // Admins can filter by userId
+      query.userId = userId;
+    }
+
     if (month) query.month = parseInt(month);
     if (year) query.year = parseInt(year);
 
