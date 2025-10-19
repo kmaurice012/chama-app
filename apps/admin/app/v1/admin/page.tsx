@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { connectDB, Chama, User, Contribution, Loan, Meeting, Fine, RotationCycle, WelfareRequest } from '@chama-app/database';
 import { Building2, Users, DollarSign, TrendingUp, Activity, Calendar, AlertCircle, Repeat, Heart } from 'lucide-react';
 import PlatformGrowthChart from '@/components/PlatformGrowthChart';

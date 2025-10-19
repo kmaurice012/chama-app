@@ -2,6 +2,8 @@ import { connectDB, Chama, User, Contribution, Loan, Meeting, Fine, RotationCycl
 import { Building2, Users, DollarSign, TrendingUp, Activity, Calendar, AlertCircle, Repeat, Heart } from 'lucide-react';
 import PlatformGrowthChart from '@/components/PlatformGrowthChart';
 
+export const dynamic = 'force-dynamic';
+
 async function getStats() {
   await connectDB();
 

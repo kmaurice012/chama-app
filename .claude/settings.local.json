@@ -21,7 +21,9 @@
       "Bash(node scripts/generate-icons.js)",
       "Bash(cat:*)",
       "Bash(git rm:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(for file in apps/admin/app/dashboard/page.tsx apps/admin/app/member/page.tsx apps/admin/app/v1/admin/page.tsx apps/admin/app/v1/client/page.tsx apps/admin/app/v2/member/page.tsx apps/admin/app/v2/member/contributions/page.tsx apps/admin/app/v2/member/fines/page.tsx apps/admin/app/v2/member/loans/page.tsx apps/admin/app/v2/member/profile/page.tsx)",
+      "Bash(if ! grep -q \"export const dynamic\" \"$file\")"
     ],
     "deny": [],
     "ask": []

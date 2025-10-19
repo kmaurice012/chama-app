@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectDB, Contribution, Loan, Chama, Fine, WelfareRequest } from '@chama-app/database';
