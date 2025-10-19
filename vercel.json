@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build:admin",
+  "buildCommand": "cd apps/admin && npm run build",
   "installCommand": "npm install",
   "functions": {
-    "app/api/**/*.ts": {
+    "apps/admin/app/api/**/*.ts": {
       "maxDuration": 30
     }
   }
