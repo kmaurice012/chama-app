@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chama-app/database": "workspace:*",
+    "@chama-app/database": "file:../../packages/database",
     "bcryptjs": "^2.4.3",
     "date-fns": "^3.0.0",
     "lucide-react": "^0.300.0",
